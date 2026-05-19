@@ -5,8 +5,8 @@ fine-tuning over multi-teacher candidate pools.
 
 LARK estimates a per-trajectory *learnability score* $\hat g_k$ from a single
 forward pass through the reference student model and then assigns a weighted
-SFT loss over the top-$B$ trajectories via a closed-form $\chi^2$- or
-$\mathrm{KL}$-tempered rule.
+SFT loss over the top-$B$ trajectories via a closed-form $\chi^2$-tempered
+rule.
 
 ## Repository layout
 
@@ -15,9 +15,7 @@ LARK/
 ├── lark/
 │   ├── score_lark.py            # forward-pass g_hat computation (Q1+Q2 in one pass)
 │   ├── selection/
-│   │   ├── select_topb.py       # hard top-B selection
-│   │   ├── select_chi2.py       # chi^2-tempered LARK closed-form
-│   │   └── select_kl.py         # KL-tempered LARK closed-form
+│   │   └── select_chi2.py       # chi^2-tempered LARK closed-form
 │   ├── train/
 │   │   ├── train_full.py        # full-parameter SFT (DeepSpeed ZeRO-2)
 │   │   ├── train_lora.py        # LoRA SFT (single GPU)
@@ -47,11 +45,11 @@ Tested with PyTorch 2.9 / CUDA 12.8 on NVIDIA A100 (80 GB).
 
 ## Data
 
-This repository ships **code only**.  You will need:
+This repository ships **code only**. You will need:
 
 1. **Candidate trajectory pool**: a JSONL file of $(\text{problem}, \text{candidate})$
    records (one trajectory per line) in the format consumed by
-   `lark/score_lark.py` (see its docstring).  The paper's candidate pool is
+   `lark/score_lark.py` (see its docstring). The paper's candidate pool is
    built from NuminaMath problems with rollouts from 11 teacher models
    (DeepSeek-R1, GPT-OSS-120B/20B, Magistral, Nemotron-Super, Phi-4-Reason+,
    Qwen3-235B/30B/8B/4B, QwQ-32B); the precise list and re-sampling protocol
@@ -59,7 +57,7 @@ This repository ships **code only**.  You will need:
 
 2. **Evaluation benchmarks**: place the standard JSON files for the
    benchmarks you want to evaluate on (`AIME.json`, `AMC.json`, `CPQA.json`,
-   `MATH-L1.json` ... `MATH-L5.json`) under `data/benchmarks/`.  The expected
+   `MATH-L1.json` ... `MATH-L5.json`) under `data/benchmarks/`. The expected
    schema is one list of `{"prompt": str, "answer": str, ...}` per file.
 
 ## End-to-end pipeline
@@ -78,33 +76,16 @@ python -m lark.score_lark \
 This produces one $\hat g_k$ per candidate (grouped by problem) using a single
 forward pass per trajectory.
 
-### 2. Select training trajectories
-
-Three closed-form rules are provided.  All consume the JSON produced in step 1
-and write a `train.jsonl` ready for SFT.
+### 2. Select training trajectories ($\chi^2$-tempered LARK)
 
 ```bash
-# Hard top-B
-python -m lark.selection.select_topb \
-    --scores  data/scores/lark_ghat.json \
-    --B       3 \
-    --output  data/selections/topb_B3/train.jsonl
-
-# chi^2-tempered LARK closed-form (the headline method in the paper)
 python -m lark.selection.select_chi2 \
     --scores  data/scores/lark_ghat.json \
     --B       3 \
     --output  data/selections/chi2_B3/train.jsonl
-
-# KL-tempered LARK closed-form
-python -m lark.selection.select_kl \
-    --scores  data/scores/lark_ghat.json \
-    --B       3 \
-    --tau     0.5 \
-    --output  data/selections/kl_B3/train.jsonl
 ```
 
-Each output JSONL has the standard chat-style record with a per-sample
+The output JSONL has the standard chat-style record with a per-sample
 `meta.train_weight` field that `train_full.py` honours.
 
 ### 3. Train
@@ -137,17 +118,6 @@ python -m lark.eval.aggregate      --eval_root results/eval --output_csv results
 
 See [`scripts/run_example.sh`](scripts/run_example.sh) for a self-contained
 demo on a small candidate pool.
-
-## Citation
-
-```bibtex
-@article{lark2026,
-  title  = {LARK: Learnability-grounded Anchor-time Ranking},
-  author = {The LARK Authors},
-  year   = {2026},
-  note   = {Anonymous preprint}
-}
-```
 
 ## License
 

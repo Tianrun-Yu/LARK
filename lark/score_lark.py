@@ -17,8 +17,8 @@ It then derives the forward-pass learnability estimator
     g_hat_k = ( L_k / sum_i L_i ) * ( 2*rho_k - sum_i rho_i*L_i / sum_i L_i )
 
 per problem.  These are exactly the quantities used in the LARK closed-form
-selection rules in `lark/selection/select_topb.py`, `select_chi2.py`, and
-`select_kl.py`.
+$\chi^2$-tempered closed-form selection rule in
+`lark/selection/select_chi2.py`.
 
 Input format
 ------------
