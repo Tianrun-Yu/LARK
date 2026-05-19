@@ -5,9 +5,9 @@ LoRA SFT training on Q2 train.jsonl data.
 
 Usage:
   python train_lora.py \
-    --train_data  ./data/selections/qwen2.5-7b/random/topb_B1/train.jsonl \
-    --model_path  Qwen/qwen2.5-7b \
-    --output_dir  ./checkpoints/qwen2.5-7b/random/topb_B1
+    --train_data  ./data/selections/chi2_B3/train.jsonl \
+    --model_path  Qwen/Qwen2.5-7B \
+    --output_dir  ./checkpoints/qwen2.5-7b/chi2_B3
 """
 
 import os
