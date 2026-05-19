@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# Runtime artefacts (not source code)
+checkpoints/
+results/
+data/candidates/*/      # heavy candidate trajectory pools — fetch separately
+data/scores/
+data/selections/
+*.log
+*.tmp

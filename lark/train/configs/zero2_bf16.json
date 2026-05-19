@@ -1,0 +1,24 @@
+{
+  "zero_optimization": {
+    "stage": 2,
+    "overlap_comm": false,
+    "contiguous_gradients": true,
+    "reduce_bucket_size": 5e8,
+    "reduce_scatter": true,
+    "allgather_partitions": true,
+    "allgather_bucket_size": 5e8
+  },
+  "bf16": {
+    "enabled": true
+  },
+  "fp16": {
+    "enabled": false
+  },
+  "communication_data_type": "fp32",
+  "gradient_accumulation_steps": "auto",
+  "gradient_clipping": "auto",
+  "steps_per_print": 10,
+  "train_batch_size": "auto",
+  "train_micro_batch_size_per_gpu": "auto",
+  "wall_clock_breakdown": false
+}

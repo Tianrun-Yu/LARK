@@ -1,0 +1,12 @@
+# SFT training hyperparameters (matches paper §C.2)
+learning_rate: 1.0e-4
+num_train_epochs: 3
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 16   # effective global batch = 64 (4 GPUs × 1 × 16)
+max_seq_length: 8192
+lr_scheduler_type: cosine
+warmup_ratio: 0.03
+logging_steps: 10
+save_strategy: steps
+save_steps: 100
+save_total_limit: 3
